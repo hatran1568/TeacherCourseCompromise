@@ -20,7 +20,8 @@ public class TeacherClasses {
         // TODO code application logic here
         Data data = Data.readDataFromFile();
         GeneticAlgorithmImplementer Ga = new GeneticAlgorithmImplementer(data);
-        ArrayList<Solution> result = Ga.implementGA();
+        
+        ArrayList<Solution> result = Ga.Search();;
         for (Solution solution : result) {
             System.out.println(solution.all_Courses_Contraints);
             System.out.println(solution.single_Teacher_Courses_Contraints);

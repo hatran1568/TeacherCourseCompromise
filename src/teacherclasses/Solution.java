@@ -13,6 +13,10 @@ import java.util.Collections;
  */
 public class Solution {
 
+    public int rank;
+    public int domination_count;
+    public ArrayList<Solution> dominated_solution;    
+    public double crowding_distance = 0;
     public int chromosome[][];
     public Data data;
     public boolean all_Courses_Contraints;
@@ -22,7 +26,7 @@ public class Solution {
     public boolean student_Rating_Constraint;
     public boolean self_Rating_Constraint;
     public boolean slot_Rating_Constraint;
-
+    public double objectives[];
     public ArrayList<Integer> sum = new ArrayList<>();
 
     public int[][] getChromosome() {
@@ -49,6 +53,16 @@ public class Solution {
             }
         }
     }
+    public void cal_objs(Data data){
+        objectives = new double[6];
+        objectives[0] = cal_Quality_P0(data);
+        objectives[1] = cal_Salary_P0(data);
+        objectives[2] = cal_Favourite_Subs_All_PJ(data);
+        objectives[3] = cal_Favourite_Slots_All_PJ(data);
+        objectives[4] = cal_Periods_All_PJ(data);
+        objectives[5] = cal_Err_Courses_All_PJ(data);
+        
+    }
 
     public double cal_Quality_P0(Data data) {
         double quality = 0;
@@ -57,7 +71,7 @@ public class Solution {
                 quality += chromosome[i][j] * data.Rating[j][data.courses[i].getSubject()];
             }
         }
-        return quality;
+        return Data.MAX_QUALITY_P0 - quality;
     }
 
     public double cal_Salary_P0(Data data) {
@@ -89,7 +103,7 @@ public class Solution {
         for (int i = 0; i < data.N; i++) {
             favourite_Subs += cal_Favourite_Subs_PJ(data, i);
         }
-        return favourite_Subs;
+        return Data.MAX_FAVORITE_SUBS_PJ- favourite_Subs;
     }
 
     public double cal_Favourite_Slots_All_PJ(Data data) {
@@ -97,7 +111,7 @@ public class Solution {
         for (int i = 0; i < data.N; i++) {
             favoriteSlots += cal_Favourite_Slots_PJ(data, i);
         }
-        return favoriteSlots;
+        return Data.MAX_FAVORITE_SLOTS_PJ- favoriteSlots;
     }
 
     public double cal_Favourite_Slots_PJ(Data data, int teacher) {
@@ -105,7 +119,7 @@ public class Solution {
         for (int i = 0; i < data.M; i++) {
             favourite_Slots += chromosome[i][teacher] * data.FSlot[teacher][i];
         }
-        return favourite_Slots;
+        return  favourite_Slots;
     }
 
     public double cal_Err_Courses_All_PJ(Data data) {
@@ -302,6 +316,24 @@ public class Solution {
                 && checkSingleSlotConstraint(data) && checkSingleTeacherCourseConstraint(data)
                 && checkStudentRatingConstraint(data) && checkSelfRatingConstaint(data)
                 && checkSlotRatingConstraint(data);
+    }
+    
+    public boolean dominates(Object o) {
+
+        if (!(o instanceof Solution)) {
+            return false;
+        }
+
+        Solution other = (Solution) o;
+        boolean and_condition = true;
+        boolean or_condition = false;
+        cal_objs(data);
+        other.cal_objs(data);
+        for(int i =0;i<6;i++){
+            and_condition = and_condition && this.objectives[i]<=other.objectives[i];
+            or_condition = or_condition || this.objectives[i] < other.objectives[i];
+        }
+        return (and_condition && or_condition);
     }
 
 }
