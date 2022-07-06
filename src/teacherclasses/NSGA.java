@@ -74,7 +74,7 @@ public class NSGA {
                 individual.cal_objs(data);
             }
 
-            for (int i = 0; i < front.get(0).objectives.length; i++) {
+            for (int i = 0; i < 6; i++) {
                 final int idx = i;
                 front.sort((o1, o2) -> {
                     int flag = 0;

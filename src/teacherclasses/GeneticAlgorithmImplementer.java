@@ -33,7 +33,7 @@ public class GeneticAlgorithmImplementer {
 
     public ArrayList<Solution> Search() {
         this.population = new Population(data);
-        for (int i = 0; i < 500; i++) {
+        for (int i = 0; i < 200; i++) {
             Solution s = generateSolution();
 //            while (s.check_Solution(data) == false) {
 //                s = generateSolution();
@@ -49,11 +49,11 @@ public class GeneticAlgorithmImplementer {
         Population return_population = null;
         for (int i = 0; i < 20; i++) {
             System.out.println(i);
-            population.extend(children);
+            population.population = new ArrayList<>(children);
             utils.fast_nondominated_sort(population);
             Population new_population = new Population(data);
             int front_num = 0;
-            while (new_population.population.size() + population.fronts.get(front_num).size() < 500) {
+            while (new_population.population.size() + population.fronts.get(front_num).size() <200) {
                 utils.calculate_crowding_distance(population.fronts.get(front_num));
                 new_population.extend(population.fronts.get(front_num));
                 front_num++;
@@ -70,7 +70,7 @@ public class GeneticAlgorithmImplementer {
                 }
                 return flag;
             });
-            int remainSolution = 500 - new_population.population.size();
+            int remainSolution = 200 - new_population.population.size();
             for (int j = 0; j < remainSolution; j++) {
                 new_population.add(population.fronts.get(front_num).get(j));
             }
